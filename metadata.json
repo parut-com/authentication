@@ -1,0 +1,14 @@
+{
+  "id": "6435e739-1a6e-4a19-b6bd-69c511de3365",
+  "name": "Authentication",
+  "description": "An oauth extension to allow users to authenticate with your app.",
+  "author": {
+    "name": "Parut Official",
+    "email": "support@parut.com",
+    "website": "https://parut.com"
+  },
+  "links": {
+    "metadata": "https://parut-com.github.io/authentication/metadata.json",
+    "runtime": "https://parut-com.github.io/authentication/index.js"
+  }
+}
