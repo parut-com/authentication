@@ -18,31 +18,32 @@ function generateConfigSchema ({ config }) {
     }
   ];
 
-  if (config?.enabled) {
-    schema[0].properties.domain = {
-      title: 'Domain',
-      type: 'string',
-      readOnly: true
-    };
-    schema[0].properties.usersMapping = {
-      type: 'object',
-      properties: {
-        tableName: {
-          title: 'Users Table',
-          type: 'string'
-        },
-        usernameProperty: {
-          title: 'Username Property',
-          type: 'string'
-        }
+
+  schema[0].properties.domain = {
+    title: 'Domain',
+    type: 'string',
+    readOnly: true
+  };
+
+  schema[0].properties.usersMapping = {
+    type: 'object',
+    properties: {
+      tableName: {
+        title: 'Users Table',
+        type: 'string'
+      },
+      usernameProperty: {
+        title: 'Username Property',
+        type: 'string'
       }
-    };
-    schema[0].properties.oidcConfigUrl = {
-      title: 'OpenID Connect Configuration',
-      type: 'string',
-      readOnly: true
-    };
-  }
+    }
+  };
+
+  schema[0].properties.oidcConfigUrl = {
+    title: 'OpenID Connect Configuration',
+    type: 'string',
+    readOnly: true
+  };
 
   return schema;
 }
@@ -234,6 +235,7 @@ async function onChange ({ account, extension, config, tokens }) {
   const result = await response.json();
 
   return {
+    ...initialConfig,
     ...config,
     domain: result.domain,
     oidcConfigUrl: result.domain + '/.well-known/openid-configuration'
