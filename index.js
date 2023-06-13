@@ -1,51 +1,53 @@
-const parutUrl = 'https://api.parut.com';
-const authManUrl = 'https://authman.parut.com';
+const parutUrl = 'http://localhost:8082';
+const authManUrl = 'http://host.docker.internal:8092';
+// const parutUrl = 'https://api.parut.com';
+// const authManUrl = 'https://authman.parut.com';
 
 const initialConfig = {
   usersMapping: {
     tableName: 'users',
     usernameProperty: 'email'
-  }
+  },
+  loginTitle: 'Example Login Title'
 };
 
 function generateConfigSchema ({ config }) {
-  const schema = [
+  return [
     {
       title: 'Settings',
       description: 'Custom settings for the extension',
       type: 'object',
-      properties: {}
-    }
-  ];
-
-
-  schema[0].properties.domain = {
-    title: 'Domain',
-    type: 'string',
-    readOnly: true
-  };
-
-  schema[0].properties.usersMapping = {
-    type: 'object',
-    properties: {
-      tableName: {
-        title: 'Users Table',
-        type: 'string'
-      },
-      usernameProperty: {
-        title: 'Username Property',
-        type: 'string'
+      properties: {
+        loginTitle: {
+          title: 'Login Page Title',
+          type: 'string'
+        },
+        usersMapping: {
+          type: 'object',
+          properties: {
+            tableName: {
+              title: 'Users Table',
+              type: 'string'
+            },
+            usernameProperty: {
+              title: 'Username Property',
+              type: 'string'
+            }
+          }
+        },
+        domain: {
+          title: 'Domain',
+          type: 'string',
+          readOnly: true
+        },
+        oidcConfigUrl: {
+          title: 'OpenID Connect Configuration',
+          type: 'string',
+          readOnly: true
+        }
       }
     }
-  };
-
-  schema[0].properties.oidcConfigUrl = {
-    title: 'OpenID Connect Configuration',
-    type: 'string',
-    readOnly: true
-  };
-
-  return schema;
+  ];
 }
 
 function generateSessionTable () {
@@ -208,6 +210,8 @@ function generateToken () {
 }
 
 async function onChange ({ account, extension, config, tokens }) {
+  config = config || initialConfig;
+
   const response = await fetch(`${authManUrl}/v1/accounts/${account.id}/extensions/${extension.id}`, {
     method: 'put',
     headers: {
@@ -217,7 +221,7 @@ async function onChange ({ account, extension, config, tokens }) {
     body: JSON.stringify({
       accountId: account.id,
       token: tokens.general,
-      title: 'Example Account Login',
+      title: config.loginTitle,
       usersUrl: `${parutUrl}/v1/accounts/${account.id}/users`,
       properties: {
         username: 'email',
@@ -254,7 +258,6 @@ function generateSchemas () {
 }
 
 module.exports = {
-  initialConfig,
   generateConfigSchema,
   generateSchemas,
   onChange
