@@ -1,7 +1,5 @@
-const parutUrl = 'http://localhost:8082';
-const authManUrl = 'http://host.docker.internal:8092';
-// const parutUrl = 'https://api.parut.com';
-// const authManUrl = 'https://authman.parut.com';
+const parutUrl = 'https://api.parut.com';
+const authManUrl = 'https://authman.parut.com';
 
 const initialConfig = {
   usersMapping: {
