@@ -21,6 +21,7 @@ function generateConfigSchema ({ config }) {
           type: 'string'
         },
         usersMapping: {
+          title: 'Users Data Mapping',
           type: 'object',
           properties: {
             tableName: {
@@ -42,6 +43,33 @@ function generateConfigSchema ({ config }) {
           title: 'OpenID Connect Configuration',
           type: 'string',
           readOnly: true
+        }
+      }
+    },
+    {
+      title: 'Clients',
+      description: 'Manage your external OIDC Clients',
+      type: 'object',
+      properties: {
+        clients: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                title: 'Client ID',
+                type: 'string'
+              },
+              redirectUris: {
+                title: 'Allowed Redirect Urls',
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              }
+            },
+            required: ['id', 'redirectUris']
+          }
         }
       }
     }
@@ -92,6 +120,10 @@ function generateUserTable () {
           title: 'Password',
           type: 'string',
           minLength: 6
+        },
+        loginEnabled: {
+          title: 'Login Enabled',
+          type: 'boolean'
         }
       },
       required: [
@@ -220,6 +252,7 @@ async function onChange ({ account, extension, config, tokens }) {
       accountId: account.id,
       token: tokens.general,
       title: config.loginTitle,
+      clients: config.clients,
       usersUrl: `${parutUrl}/v1/accounts/${account.id}/users`,
       properties: {
         username: 'email',
