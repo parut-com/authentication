@@ -6,6 +6,12 @@ const initialConfig = {
     tableName: 'users',
     usernameProperty: 'email'
   },
+  registration: {
+    enabled: false
+  },
+  passwordReset: {
+    enabled: false
+  },
   loginTitle: 'Example Login Title'
 };
 
@@ -16,6 +22,17 @@ function generateConfigSchema ({ config }) {
       description: 'Custom settings for the extension',
       type: 'object',
       properties: {
+        domain: {
+          title: 'Domain',
+          type: 'string',
+          readOnly: true
+        },
+        oidcConfigUrl: {
+          title: 'OpenID Connect Configuration',
+          type: 'string',
+          readOnly: true
+        },
+
         loginTitle: {
           title: 'Login Page Title',
           type: 'string'
@@ -34,15 +51,15 @@ function generateConfigSchema ({ config }) {
             }
           }
         },
-        domain: {
-          title: 'Domain',
-          type: 'string',
-          readOnly: true
-        },
-        oidcConfigUrl: {
-          title: 'OpenID Connect Configuration',
-          type: 'string',
-          readOnly: true
+        passwordReset: {
+          title: 'Password Reset',
+          type: 'object',
+          properties: {
+            enabled: {
+              title: 'Enabled',
+              type: 'boolean'
+            }
+          }
         }
       }
     },
@@ -69,6 +86,22 @@ function generateConfigSchema ({ config }) {
               }
             },
             required: ['id', 'redirectUris']
+          }
+        }
+      }
+    },
+    {
+      title: 'Registration',
+      description: 'Manage the registration abilities',
+      type: 'object',
+      properties: {
+        registration: {
+          type: 'object',
+          properties: {
+            enabled: {
+              title: 'Registration Enabled',
+              type: 'boolean'
+            }
           }
         }
       }
@@ -253,6 +286,8 @@ async function onChange ({ account, extension, config, tokens }) {
       token: tokens.general,
       title: config.loginTitle,
       clients: config.clients,
+      registration: config.registration,
+      passwordReset: config.passwordReset,
       usersUrl: `${parutUrl}/v1/accounts/${account.id}/users`,
       properties: {
         username: 'email',
